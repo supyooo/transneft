@@ -1,0 +1,45 @@
+digraph ER {
+  graph [rankdir=LR, fontname="Arial", nodesep=0.5, ranksep=0.9, bgcolor="white", dpi=200];
+  node  [shape=plaintext, fontname="Arial", fontsize=10];
+  edge  [fontname="Arial", fontsize=9, color="#555555", arrowhead=crow, arrowtail=tee, dir=both];
+  object_type [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#1F4E79"><font color="white"><b>OBJECT_TYPE</b></font></td></tr>
+    <tr><td align="left" port="pk"><b>type_code</b> (PK)</td></tr>
+    <tr><td align="left">name</td></tr>
+    <tr><td align="left">description</td></tr></table>>];
+  rule [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#1F4E79"><font color="white"><b>OBJECT_TYPE_RULE</b></font></td></tr>
+    <tr><td align="left"><b>parent_type</b> (PK, FK)</td></tr>
+    <tr><td align="left"><b>child_type</b> (PK, FK)</td></tr>
+    <tr><td align="left">min_count</td></tr>
+    <tr><td align="left">max_count</td></tr></table>>];
+  object [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#1F4E79"><font color="white"><b>OBJECT</b></font></td></tr>
+    <tr><td align="left"><b>object_id</b> (PK)</td></tr>
+    <tr><td align="left">object_code (UK)</td></tr>
+    <tr><td align="left">type_code (FK)</td></tr>
+    <tr><td align="left" bgcolor="#FFF2CC">parent_id (FK) — состав</td></tr>
+    <tr><td align="left">name</td></tr>
+    <tr><td align="left">km</td></tr>
+    <tr><td align="left">seq_no</td></tr>
+    <tr><td align="left">valid_from / valid_to</td></tr>
+    <tr><td align="left">attrs (jsonb)</td></tr></table>>];
+  link [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#1F4E79"><font color="white"><b>OBJECT_LINK</b></font></td></tr>
+    <tr><td align="left"><b>link_id</b> (PK)</td></tr>
+    <tr><td align="left">from_object_id (FK)</td></tr>
+    <tr><td align="left">to_object_id (FK)</td></tr>
+    <tr><td align="left" bgcolor="#FFF2CC">link_type: FLOW / USES / LOCATED_AT</td></tr></table>>];
+  param [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+    <tr><td bgcolor="#1F4E79"><font color="white"><b>PARAMETER</b></font></td></tr>
+    <tr><td align="left"><b>parameter_id</b> (PK)</td></tr>
+    <tr><td align="left">object_id (FK)</td></tr>
+    <tr><td align="left">code, name, unit</td></tr>
+    <tr><td align="left" bgcolor="#E2EFDA">label — путь в PI AF</td></tr>
+    <tr><td align="left" bgcolor="#E2EFDA">nic — ID сигнала в ИС-источнике</td></tr></table>>];
+  object_type -> rule [label="parent_type / child_type"];
+  object_type -> object [label="классифицирует"];
+  object -> object [label="parent_id (1 родитель)"];
+  object -> link [label="from / to"];
+  object -> param [label="имеет сигналы"];
+}
