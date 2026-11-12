@@ -1,0 +1,1450 @@
+{
+  "model": "Задание 1. Участок МН с двумя параллельными ТУ (рис. 3, красная рамка)",
+  "how_to_read": [
+    "Файл повторяет таблицы ER-диаграммы: object_types = «Тип объекта», type_rules = «Правило состава», tree = «Объект», links = «Связь объектов».",
+    "Вложенность children = поле parent_id: объект, внутри которого лежит запись, является её родителем; записи в его children — потомки.",
+    "object_code собирается из кодов всех родителей, поэтому цепочка родителей читается прямо из кода: MT1.TU1.NPS2.NS.MNA1.",
+    "seq_no — порядок объектов одного родителя по ходу нефти. km для этого не годится: на ТУ-1 после НПС-2 нумерация километров начинается заново (499 → 6).",
+    "links — отношения вне дерева. USES: станция пользуется общим объектом, не являясь его родителем. LOCATED_AT: станция размещена на площадке.",
+    "Допущения по рис. 2, которых нет в тексте задания: технологическая площадка (SITE), нитка САРД, камеры пуска и приёма СОД, отдельные фильтры в блоке ФГУ, число резервуаров и подпорных агрегатов."
+  ],
+  "object_types": [
+    {"type_code": "MT", "name": "Магистральный трубопровод"},
+    {"type_code": "SITE", "name": "Технологическая площадка"},
+    {"type_code": "TU", "name": "Технологический участок"},
+    {"type_code": "GNPS", "name": "Головная НПС"},
+    {"type_code": "NPS", "name": "Промежуточная НПС"},
+    {"type_code": "LU", "name": "Линейный участок (ЛЧ)"},
+    {"type_code": "KP", "name": "Контрольный пункт ЛЧ"},
+    {"type_code": "END", "name": "Конечный пункт ТУ"},
+    {"type_code": "RP", "name": "Резервуарный парк"},
+    {"type_code": "RVS", "name": "Резервуар"},
+    {"type_code": "PNS", "name": "Подпорная насосная станция"},
+    {"type_code": "PA", "name": "Подпорный агрегат"},
+    {"type_code": "NS", "name": "Насосная станция (магистральная)"},
+    {"type_code": "MNA", "name": "Магистральный насосный агрегат"},
+    {"type_code": "OK", "name": "Обратный клапан"},
+    {"type_code": "SARD", "name": "Система автоматического регулирования давления"},
+    {"type_code": "SARD_LINE", "name": "Нитка САРД"},
+    {"type_code": "ZASL", "name": "Регулирующая заслонка"},
+    {"type_code": "FGU_BLOCK", "name": "Блок фильтров-грязеуловителей"},
+    {"type_code": "FGU", "name": "Фильтр-грязеуловитель"},
+    {"type_code": "KPP_SOD", "name": "Камера пуска-приема СОД"},
+    {"type_code": "KAM_PRIEM", "name": "Камера приема СОД"},
+    {"type_code": "KAM_PUSK", "name": "Камера пуска СОД"},
+    {"type_code": "ZD", "name": "Задвижка"},
+    {"type_code": "DD", "name": "Датчик давления"}
+  ],
+  "type_rules": [
+    {"parent_type": "MT", "child_type": "TU", "min_count": 1, "max_count": null},
+    {"parent_type": "MT", "child_type": "SITE", "min_count": 0, "max_count": null},
+    {"parent_type": "SITE", "child_type": "RP", "min_count": 0, "max_count": null},
+    {"parent_type": "TU", "child_type": "GNPS", "min_count": 1, "max_count": 1},
+    {"parent_type": "TU", "child_type": "NPS", "min_count": 0, "max_count": null},
+    {"parent_type": "TU", "child_type": "LU", "min_count": 1, "max_count": null},
+    {"parent_type": "TU", "child_type": "END", "min_count": 1, "max_count": 1},
+    {"parent_type": "GNPS", "child_type": "PNS", "min_count": 1, "max_count": 1},
+    {"parent_type": "GNPS", "child_type": "RP", "min_count": 0, "max_count": 1},
+    {"parent_type": "GNPS", "child_type": "KPP_SOD", "min_count": 1, "max_count": 1},
+    {"parent_type": "GNPS", "child_type": "FGU_BLOCK", "min_count": 1, "max_count": 1},
+    {"parent_type": "GNPS", "child_type": "NS", "min_count": 1, "max_count": 1},
+    {"parent_type": "GNPS", "child_type": "SARD", "min_count": 1, "max_count": 1},
+    {"parent_type": "NPS", "child_type": "KPP_SOD", "min_count": 1, "max_count": 1},
+    {"parent_type": "NPS", "child_type": "FGU_BLOCK", "min_count": 1, "max_count": 1},
+    {"parent_type": "NPS", "child_type": "NS", "min_count": 1, "max_count": 1},
+    {"parent_type": "NPS", "child_type": "SARD", "min_count": 1, "max_count": 1},
+    {"parent_type": "PNS", "child_type": "PA", "min_count": 1, "max_count": 10},
+    {"parent_type": "PA", "child_type": "ZD", "min_count": 2, "max_count": 2},
+    {"parent_type": "NS", "child_type": "MNA", "min_count": 4, "max_count": 4},
+    {"parent_type": "MNA", "child_type": "ZD", "min_count": 2, "max_count": 2},
+    {"parent_type": "MNA", "child_type": "OK", "min_count": 1, "max_count": 1},
+    {"parent_type": "SARD", "child_type": "SARD_LINE", "min_count": 2, "max_count": 2},
+    {"parent_type": "SARD_LINE", "child_type": "ZASL", "min_count": 1, "max_count": 1},
+    {"parent_type": "SARD_LINE", "child_type": "ZD", "min_count": 2, "max_count": 2},
+    {"parent_type": "FGU_BLOCK", "child_type": "FGU", "min_count": 1, "max_count": null},
+    {"parent_type": "FGU", "child_type": "ZD", "min_count": 2, "max_count": 2},
+    {"parent_type": "KPP_SOD", "child_type": "KAM_PRIEM", "min_count": 1, "max_count": 1},
+    {"parent_type": "KPP_SOD", "child_type": "KAM_PUSK", "min_count": 1, "max_count": 1},
+    {"parent_type": "KPP_SOD", "child_type": "ZD", "min_count": 1, "max_count": null},
+    {"parent_type": "LU", "child_type": "KP", "min_count": 0, "max_count": null},
+    {"parent_type": "KP", "child_type": "ZD", "min_count": 1, "max_count": 1},
+    {"parent_type": "KP", "child_type": "DD", "min_count": 2, "max_count": 2},
+    {"parent_type": "END", "child_type": "RP", "min_count": 1, "max_count": 1},
+    {"parent_type": "RP", "child_type": "RVS", "min_count": 1, "max_count": null}
+  ],
+  "tree": {
+    "object_code": "MT1",
+    "type_code": "MT",
+    "name": "Магистральный трубопровод (выделенный участок рис. 3)",
+    "children": [
+      {
+        "object_code": "MT1.SITE_HEAD",
+        "type_code": "SITE",
+        "name": "Головная площадка (ГНПС-1, ГНПС-2)",
+        "seq_no": 1,
+        "children": [
+          {
+            "object_code": "MT1.SITE_HEAD.RP",
+            "type_code": "RP",
+            "name": "Общий РП головной площадки",
+            "children": [
+              {"object_code": "MT1.SITE_HEAD.RP.RVS1", "type_code": "RVS", "name": "РВС-1", "seq_no": 1},
+              {"object_code": "MT1.SITE_HEAD.RP.RVS2", "type_code": "RVS", "name": "РВС-2", "seq_no": 2}
+            ]
+          }
+        ]
+      },
+      {"object_code": "MT1.SITE_NPS2", "type_code": "SITE", "name": "Площадка НПС-2 (НПС-2 ТУ-1, НПС-2 ТУ-2)", "seq_no": 2},
+      {
+        "object_code": "MT1.TU1",
+        "type_code": "TU",
+        "name": "ТУ-1",
+        "seq_no": 1,
+        "children": [
+          {
+            "object_code": "MT1.TU1.GNPS1",
+            "type_code": "GNPS",
+            "name": "ГНПС-1",
+            "seq_no": 1,
+            "children": [
+              {
+                "object_code": "MT1.TU1.GNPS1.PNS",
+                "type_code": "PNS",
+                "name": "Подпорная насосная станция",
+                "seq_no": 1,
+                "children": [
+                  {
+                    "object_code": "MT1.TU1.GNPS1.PNS.PA1",
+                    "type_code": "PA",
+                    "name": "ПА-1",
+                    "seq_no": 1,
+                    "children": [
+                      {"object_code": "MT1.TU1.GNPS1.PNS.PA1.ZD_IN", "type_code": "ZD", "name": "Задвижка на входе ПА-1", "seq_no": 1},
+                      {"object_code": "MT1.TU1.GNPS1.PNS.PA1.ZD_OUT", "type_code": "ZD", "name": "Задвижка на выходе ПА-1", "seq_no": 2}
+                    ]
+                  },
+                  {
+                    "object_code": "MT1.TU1.GNPS1.PNS.PA2",
+                    "type_code": "PA",
+                    "name": "ПА-2",
+                    "seq_no": 2,
+                    "children": [
+                      {"object_code": "MT1.TU1.GNPS1.PNS.PA2.ZD_IN", "type_code": "ZD", "name": "Задвижка на входе ПА-2", "seq_no": 1},
+                      {"object_code": "MT1.TU1.GNPS1.PNS.PA2.ZD_OUT", "type_code": "ZD", "name": "Задвижка на выходе ПА-2", "seq_no": 2}
+                    ]
+                  },
+                  {
+                    "object_code": "MT1.TU1.GNPS1.PNS.PA3",
+                    "type_code": "PA",
+                    "name": "ПА-3",
+                    "seq_no": 3,
+                    "children": [
+                      {"object_code": "MT1.TU1.GNPS1.PNS.PA3.ZD_IN", "type_code": "ZD", "name": "Задвижка на входе ПА-3", "seq_no": 1},
+                      {"object_code": "MT1.TU1.GNPS1.PNS.PA3.ZD_OUT", "type_code": "ZD", "name": "Задвижка на выходе ПА-3", "seq_no": 2}
+                    ]
+                  }
+                ]
+              },
+              {
+                "object_code": "MT1.TU1.GNPS1.KPP_SOD",
+                "type_code": "KPP_SOD",
+                "name": "КПП СОД",
+                "seq_no": 2,
+                "children": [
+                  {"object_code": "MT1.TU1.GNPS1.KPP_SOD.PRIEM", "type_code": "KAM_PRIEM", "name": "Камера приема СОД", "seq_no": 1},
+                  {"object_code": "MT1.TU1.GNPS1.KPP_SOD.PUSK", "type_code": "KAM_PUSK", "name": "Камера пуска СОД", "seq_no": 2},
+                  {"object_code": "MT1.TU1.GNPS1.KPP_SOD.ZD1", "type_code": "ZD", "name": "Задвижка 1 узла КПП СОД", "seq_no": 3},
+                  {"object_code": "MT1.TU1.GNPS1.KPP_SOD.ZD2", "type_code": "ZD", "name": "Задвижка 2 узла КПП СОД", "seq_no": 4},
+                  {"object_code": "MT1.TU1.GNPS1.KPP_SOD.ZD3", "type_code": "ZD", "name": "Задвижка 3 узла КПП СОД", "seq_no": 5},
+                  {"object_code": "MT1.TU1.GNPS1.KPP_SOD.ZD4", "type_code": "ZD", "name": "Задвижка 4 узла КПП СОД", "seq_no": 6},
+                  {"object_code": "MT1.TU1.GNPS1.KPP_SOD.ZD5", "type_code": "ZD", "name": "Задвижка 5 узла КПП СОД", "seq_no": 7},
+                  {"object_code": "MT1.TU1.GNPS1.KPP_SOD.ZD6", "type_code": "ZD", "name": "Задвижка 6 узла КПП СОД", "seq_no": 8}
+                ]
+              },
+              {
+                "object_code": "MT1.TU1.GNPS1.FGU",
+                "type_code": "FGU_BLOCK",
+                "name": "Блок ФГУ",
+                "seq_no": 3,
+                "children": [
+                  {
+                    "object_code": "MT1.TU1.GNPS1.FGU.F1",
+                    "type_code": "FGU",
+                    "name": "ФГУ-1",
+                    "seq_no": 1,
+                    "children": [
+                      {"object_code": "MT1.TU1.GNPS1.FGU.F1.ZD_IN", "type_code": "ZD", "name": "Задвижка на входе ФГУ-1", "seq_no": 1},
+                      {"object_code": "MT1.TU1.GNPS1.FGU.F1.ZD_OUT", "type_code": "ZD", "name": "Задвижка на выходе ФГУ-1", "seq_no": 2}
+                    ]
+                  },
+                  {
+                    "object_code": "MT1.TU1.GNPS1.FGU.F2",
+                    "type_code": "FGU",
+                    "name": "ФГУ-2",
+                    "seq_no": 2,
+                    "children": [
+                      {"object_code": "MT1.TU1.GNPS1.FGU.F2.ZD_IN", "type_code": "ZD", "name": "Задвижка на входе ФГУ-2", "seq_no": 1},
+                      {"object_code": "MT1.TU1.GNPS1.FGU.F2.ZD_OUT", "type_code": "ZD", "name": "Задвижка на выходе ФГУ-2", "seq_no": 2}
+                    ]
+                  }
+                ]
+              },
+              {
+                "object_code": "MT1.TU1.GNPS1.NS",
+                "type_code": "NS",
+                "name": "Магистральная насосная станция",
+                "seq_no": 4,
+                "children": [
+                  {
+                    "object_code": "MT1.TU1.GNPS1.NS.MNA1",
+                    "type_code": "MNA",
+                    "name": "МНА-1",
+                    "seq_no": 1,
+                    "children": [
+                      {"object_code": "MT1.TU1.GNPS1.NS.MNA1.ZD_IN", "type_code": "ZD", "name": "Задвижка на входе МНА-1", "seq_no": 1},
+                      {"object_code": "MT1.TU1.GNPS1.NS.MNA1.ZD_OUT", "type_code": "ZD", "name": "Задвижка на выходе МНА-1", "seq_no": 2},
+                      {"object_code": "MT1.TU1.GNPS1.NS.MNA1.OK", "type_code": "OK", "name": "Обратный клапан МНА-1", "seq_no": 3}
+                    ]
+                  },
+                  {
+                    "object_code": "MT1.TU1.GNPS1.NS.MNA2",
+                    "type_code": "MNA",
+                    "name": "МНА-2",
+                    "seq_no": 2,
+                    "children": [
+                      {"object_code": "MT1.TU1.GNPS1.NS.MNA2.ZD_IN", "type_code": "ZD", "name": "Задвижка на входе МНА-2", "seq_no": 1},
+                      {"object_code": "MT1.TU1.GNPS1.NS.MNA2.ZD_OUT", "type_code": "ZD", "name": "Задвижка на выходе МНА-2", "seq_no": 2},
+                      {"object_code": "MT1.TU1.GNPS1.NS.MNA2.OK", "type_code": "OK", "name": "Обратный клапан МНА-2", "seq_no": 3}
+                    ]
+                  },
+                  {
+                    "object_code": "MT1.TU1.GNPS1.NS.MNA3",
+                    "type_code": "MNA",
+                    "name": "МНА-3",
+                    "seq_no": 3,
+                    "children": [
+                      {"object_code": "MT1.TU1.GNPS1.NS.MNA3.ZD_IN", "type_code": "ZD", "name": "Задвижка на входе МНА-3", "seq_no": 1},
+                      {"object_code": "MT1.TU1.GNPS1.NS.MNA3.ZD_OUT", "type_code": "ZD", "name": "Задвижка на выходе МНА-3", "seq_no": 2},
+                      {"object_code": "MT1.TU1.GNPS1.NS.MNA3.OK", "type_code": "OK", "name": "Обратный клапан МНА-3", "seq_no": 3}
+                    ]
+                  },
+                  {
+                    "object_code": "MT1.TU1.GNPS1.NS.MNA4",
+                    "type_code": "MNA",
+                    "name": "МНА-4",
+                    "seq_no": 4,
+                    "children": [
+                      {"object_code": "MT1.TU1.GNPS1.NS.MNA4.ZD_IN", "type_code": "ZD", "name": "Задвижка на входе МНА-4", "seq_no": 1},
+                      {"object_code": "MT1.TU1.GNPS1.NS.MNA4.ZD_OUT", "type_code": "ZD", "name": "Задвижка на выходе МНА-4", "seq_no": 2},
+                      {"object_code": "MT1.TU1.GNPS1.NS.MNA4.OK", "type_code": "OK", "name": "Обратный клапан МНА-4", "seq_no": 3}
+                    ]
+                  }
+                ]
+              },
+              {
+                "object_code": "MT1.TU1.GNPS1.SARD",
+                "type_code": "SARD",
+                "name": "САРД",
+                "seq_no": 5,
+                "children": [
+                  {
+                    "object_code": "MT1.TU1.GNPS1.SARD.L1",
+                    "type_code": "SARD_LINE",
+                    "name": "Нитка САРД 1",
+                    "seq_no": 1,
+                    "children": [
+                      {"object_code": "MT1.TU1.GNPS1.SARD.L1.ZD_IN", "type_code": "ZD", "name": "Задвижка до заслонки 1", "seq_no": 1},
+                      {"object_code": "MT1.TU1.GNPS1.SARD.L1.ZASL", "type_code": "ZASL", "name": "Регулирующая заслонка 1", "seq_no": 2},
+                      {"object_code": "MT1.TU1.GNPS1.SARD.L1.ZD_OUT", "type_code": "ZD", "name": "Задвижка после заслонки 1", "seq_no": 3}
+                    ]
+                  },
+                  {
+                    "object_code": "MT1.TU1.GNPS1.SARD.L2",
+                    "type_code": "SARD_LINE",
+                    "name": "Нитка САРД 2",
+                    "seq_no": 2,
+                    "children": [
+                      {"object_code": "MT1.TU1.GNPS1.SARD.L2.ZD_IN", "type_code": "ZD", "name": "Задвижка до заслонки 2", "seq_no": 1},
+                      {"object_code": "MT1.TU1.GNPS1.SARD.L2.ZASL", "type_code": "ZASL", "name": "Регулирующая заслонка 2", "seq_no": 2},
+                      {"object_code": "MT1.TU1.GNPS1.SARD.L2.ZD_OUT", "type_code": "ZD", "name": "Задвижка после заслонки 2", "seq_no": 3}
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "object_code": "MT1.TU1.LU1",
+            "type_code": "LU",
+            "name": "ЛУ ГНПС-1 – НПС-2",
+            "seq_no": 2,
+            "children": [
+              {
+                "object_code": "MT1.TU1.LU1.KP282",
+                "type_code": "KP",
+                "name": "КП-282",
+                "km": 282,
+                "seq_no": 1,
+                "children": [
+                  {"object_code": "MT1.TU1.LU1.KP282.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU1.LU1.KP282.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU1.LU1.KP282.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU1.LU1.KP289",
+                "type_code": "KP",
+                "name": "КП-289",
+                "km": 289,
+                "seq_no": 2,
+                "children": [
+                  {"object_code": "MT1.TU1.LU1.KP289.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU1.LU1.KP289.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU1.LU1.KP289.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU1.LU1.KP304",
+                "type_code": "KP",
+                "name": "КП-304",
+                "km": 304,
+                "seq_no": 3,
+                "children": [
+                  {"object_code": "MT1.TU1.LU1.KP304.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU1.LU1.KP304.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU1.LU1.KP304.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU1.LU1.KP321",
+                "type_code": "KP",
+                "name": "КП-321",
+                "km": 321,
+                "seq_no": 4,
+                "children": [
+                  {"object_code": "MT1.TU1.LU1.KP321.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU1.LU1.KP321.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU1.LU1.KP321.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU1.LU1.KP336",
+                "type_code": "KP",
+                "name": "КП-336",
+                "km": 336,
+                "seq_no": 5,
+                "children": [
+                  {"object_code": "MT1.TU1.LU1.KP336.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU1.LU1.KP336.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU1.LU1.KP336.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU1.LU1.KP352",
+                "type_code": "KP",
+                "name": "КП-352",
+                "km": 352,
+                "seq_no": 6,
+                "children": [
+                  {"object_code": "MT1.TU1.LU1.KP352.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU1.LU1.KP352.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU1.LU1.KP352.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU1.LU1.KP365",
+                "type_code": "KP",
+                "name": "КП-365",
+                "km": 365,
+                "seq_no": 7,
+                "children": [
+                  {"object_code": "MT1.TU1.LU1.KP365.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU1.LU1.KP365.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU1.LU1.KP365.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU1.LU1.KP386",
+                "type_code": "KP",
+                "name": "КП-386",
+                "km": 386,
+                "seq_no": 8,
+                "children": [
+                  {"object_code": "MT1.TU1.LU1.KP386.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU1.LU1.KP386.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU1.LU1.KP386.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU1.LU1.KP387",
+                "type_code": "KP",
+                "name": "КП-387",
+                "km": 387,
+                "seq_no": 9,
+                "children": [
+                  {"object_code": "MT1.TU1.LU1.KP387.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU1.LU1.KP387.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU1.LU1.KP387.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU1.LU1.KP390",
+                "type_code": "KP",
+                "name": "КП-390",
+                "km": 390,
+                "seq_no": 10,
+                "children": [
+                  {"object_code": "MT1.TU1.LU1.KP390.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU1.LU1.KP390.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU1.LU1.KP390.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU1.LU1.KP392",
+                "type_code": "KP",
+                "name": "КП-392",
+                "km": 392,
+                "seq_no": 11,
+                "children": [
+                  {"object_code": "MT1.TU1.LU1.KP392.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU1.LU1.KP392.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU1.LU1.KP392.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU1.LU1.KP414",
+                "type_code": "KP",
+                "name": "КП-414",
+                "km": 414,
+                "seq_no": 12,
+                "children": [
+                  {"object_code": "MT1.TU1.LU1.KP414.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU1.LU1.KP414.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU1.LU1.KP414.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU1.LU1.KP437",
+                "type_code": "KP",
+                "name": "КП-437",
+                "km": 437,
+                "seq_no": 13,
+                "children": [
+                  {"object_code": "MT1.TU1.LU1.KP437.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU1.LU1.KP437.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU1.LU1.KP437.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU1.LU1.KP454",
+                "type_code": "KP",
+                "name": "КП-454",
+                "km": 454,
+                "seq_no": 14,
+                "children": [
+                  {"object_code": "MT1.TU1.LU1.KP454.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU1.LU1.KP454.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU1.LU1.KP454.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU1.LU1.KP478",
+                "type_code": "KP",
+                "name": "КП-478",
+                "km": 478,
+                "seq_no": 15,
+                "children": [
+                  {"object_code": "MT1.TU1.LU1.KP478.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU1.LU1.KP478.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU1.LU1.KP478.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU1.LU1.KP499",
+                "type_code": "KP",
+                "name": "КП-499",
+                "km": 499,
+                "seq_no": 16,
+                "children": [
+                  {"object_code": "MT1.TU1.LU1.KP499.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU1.LU1.KP499.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU1.LU1.KP499.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              }
+            ]
+          },
+          {
+            "object_code": "MT1.TU1.NPS2",
+            "type_code": "NPS",
+            "name": "НПС-2 (ТУ-1)",
+            "seq_no": 3,
+            "children": [
+              {
+                "object_code": "MT1.TU1.NPS2.KPP_SOD",
+                "type_code": "KPP_SOD",
+                "name": "КПП СОД",
+                "seq_no": 1,
+                "children": [
+                  {"object_code": "MT1.TU1.NPS2.KPP_SOD.PRIEM", "type_code": "KAM_PRIEM", "name": "Камера приема СОД", "seq_no": 1},
+                  {"object_code": "MT1.TU1.NPS2.KPP_SOD.PUSK", "type_code": "KAM_PUSK", "name": "Камера пуска СОД", "seq_no": 2},
+                  {"object_code": "MT1.TU1.NPS2.KPP_SOD.ZD1", "type_code": "ZD", "name": "Задвижка 1 узла КПП СОД", "seq_no": 3},
+                  {"object_code": "MT1.TU1.NPS2.KPP_SOD.ZD2", "type_code": "ZD", "name": "Задвижка 2 узла КПП СОД", "seq_no": 4},
+                  {"object_code": "MT1.TU1.NPS2.KPP_SOD.ZD3", "type_code": "ZD", "name": "Задвижка 3 узла КПП СОД", "seq_no": 5},
+                  {"object_code": "MT1.TU1.NPS2.KPP_SOD.ZD4", "type_code": "ZD", "name": "Задвижка 4 узла КПП СОД", "seq_no": 6},
+                  {"object_code": "MT1.TU1.NPS2.KPP_SOD.ZD5", "type_code": "ZD", "name": "Задвижка 5 узла КПП СОД", "seq_no": 7},
+                  {"object_code": "MT1.TU1.NPS2.KPP_SOD.ZD6", "type_code": "ZD", "name": "Задвижка 6 узла КПП СОД", "seq_no": 8}
+                ]
+              },
+              {
+                "object_code": "MT1.TU1.NPS2.FGU",
+                "type_code": "FGU_BLOCK",
+                "name": "Блок ФГУ",
+                "seq_no": 2,
+                "children": [
+                  {
+                    "object_code": "MT1.TU1.NPS2.FGU.F1",
+                    "type_code": "FGU",
+                    "name": "ФГУ-1",
+                    "seq_no": 1,
+                    "children": [
+                      {"object_code": "MT1.TU1.NPS2.FGU.F1.ZD_IN", "type_code": "ZD", "name": "Задвижка на входе ФГУ-1", "seq_no": 1},
+                      {"object_code": "MT1.TU1.NPS2.FGU.F1.ZD_OUT", "type_code": "ZD", "name": "Задвижка на выходе ФГУ-1", "seq_no": 2}
+                    ]
+                  },
+                  {
+                    "object_code": "MT1.TU1.NPS2.FGU.F2",
+                    "type_code": "FGU",
+                    "name": "ФГУ-2",
+                    "seq_no": 2,
+                    "children": [
+                      {"object_code": "MT1.TU1.NPS2.FGU.F2.ZD_IN", "type_code": "ZD", "name": "Задвижка на входе ФГУ-2", "seq_no": 1},
+                      {"object_code": "MT1.TU1.NPS2.FGU.F2.ZD_OUT", "type_code": "ZD", "name": "Задвижка на выходе ФГУ-2", "seq_no": 2}
+                    ]
+                  }
+                ]
+              },
+              {
+                "object_code": "MT1.TU1.NPS2.NS",
+                "type_code": "NS",
+                "name": "Магистральная насосная станция",
+                "seq_no": 3,
+                "children": [
+                  {
+                    "object_code": "MT1.TU1.NPS2.NS.MNA1",
+                    "type_code": "MNA",
+                    "name": "МНА-1",
+                    "seq_no": 1,
+                    "children": [
+                      {"object_code": "MT1.TU1.NPS2.NS.MNA1.ZD_IN", "type_code": "ZD", "name": "Задвижка на входе МНА-1", "seq_no": 1},
+                      {"object_code": "MT1.TU1.NPS2.NS.MNA1.ZD_OUT", "type_code": "ZD", "name": "Задвижка на выходе МНА-1", "seq_no": 2},
+                      {"object_code": "MT1.TU1.NPS2.NS.MNA1.OK", "type_code": "OK", "name": "Обратный клапан МНА-1", "seq_no": 3}
+                    ]
+                  },
+                  {
+                    "object_code": "MT1.TU1.NPS2.NS.MNA2",
+                    "type_code": "MNA",
+                    "name": "МНА-2",
+                    "seq_no": 2,
+                    "children": [
+                      {"object_code": "MT1.TU1.NPS2.NS.MNA2.ZD_IN", "type_code": "ZD", "name": "Задвижка на входе МНА-2", "seq_no": 1},
+                      {"object_code": "MT1.TU1.NPS2.NS.MNA2.ZD_OUT", "type_code": "ZD", "name": "Задвижка на выходе МНА-2", "seq_no": 2},
+                      {"object_code": "MT1.TU1.NPS2.NS.MNA2.OK", "type_code": "OK", "name": "Обратный клапан МНА-2", "seq_no": 3}
+                    ]
+                  },
+                  {
+                    "object_code": "MT1.TU1.NPS2.NS.MNA3",
+                    "type_code": "MNA",
+                    "name": "МНА-3",
+                    "seq_no": 3,
+                    "children": [
+                      {"object_code": "MT1.TU1.NPS2.NS.MNA3.ZD_IN", "type_code": "ZD", "name": "Задвижка на входе МНА-3", "seq_no": 1},
+                      {"object_code": "MT1.TU1.NPS2.NS.MNA3.ZD_OUT", "type_code": "ZD", "name": "Задвижка на выходе МНА-3", "seq_no": 2},
+                      {"object_code": "MT1.TU1.NPS2.NS.MNA3.OK", "type_code": "OK", "name": "Обратный клапан МНА-3", "seq_no": 3}
+                    ]
+                  },
+                  {
+                    "object_code": "MT1.TU1.NPS2.NS.MNA4",
+                    "type_code": "MNA",
+                    "name": "МНА-4",
+                    "seq_no": 4,
+                    "children": [
+                      {"object_code": "MT1.TU1.NPS2.NS.MNA4.ZD_IN", "type_code": "ZD", "name": "Задвижка на входе МНА-4", "seq_no": 1},
+                      {"object_code": "MT1.TU1.NPS2.NS.MNA4.ZD_OUT", "type_code": "ZD", "name": "Задвижка на выходе МНА-4", "seq_no": 2},
+                      {"object_code": "MT1.TU1.NPS2.NS.MNA4.OK", "type_code": "OK", "name": "Обратный клапан МНА-4", "seq_no": 3}
+                    ]
+                  }
+                ]
+              },
+              {
+                "object_code": "MT1.TU1.NPS2.SARD",
+                "type_code": "SARD",
+                "name": "САРД",
+                "seq_no": 4,
+                "children": [
+                  {
+                    "object_code": "MT1.TU1.NPS2.SARD.L1",
+                    "type_code": "SARD_LINE",
+                    "name": "Нитка САРД 1",
+                    "seq_no": 1,
+                    "children": [
+                      {"object_code": "MT1.TU1.NPS2.SARD.L1.ZD_IN", "type_code": "ZD", "name": "Задвижка до заслонки 1", "seq_no": 1},
+                      {"object_code": "MT1.TU1.NPS2.SARD.L1.ZASL", "type_code": "ZASL", "name": "Регулирующая заслонка 1", "seq_no": 2},
+                      {"object_code": "MT1.TU1.NPS2.SARD.L1.ZD_OUT", "type_code": "ZD", "name": "Задвижка после заслонки 1", "seq_no": 3}
+                    ]
+                  },
+                  {
+                    "object_code": "MT1.TU1.NPS2.SARD.L2",
+                    "type_code": "SARD_LINE",
+                    "name": "Нитка САРД 2",
+                    "seq_no": 2,
+                    "children": [
+                      {"object_code": "MT1.TU1.NPS2.SARD.L2.ZD_IN", "type_code": "ZD", "name": "Задвижка до заслонки 2", "seq_no": 1},
+                      {"object_code": "MT1.TU1.NPS2.SARD.L2.ZASL", "type_code": "ZASL", "name": "Регулирующая заслонка 2", "seq_no": 2},
+                      {"object_code": "MT1.TU1.NPS2.SARD.L2.ZD_OUT", "type_code": "ZD", "name": "Задвижка после заслонки 2", "seq_no": 3}
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "object_code": "MT1.TU1.LU2",
+            "type_code": "LU",
+            "name": "ЛУ НПС-2 – КП ТУ-1",
+            "seq_no": 4,
+            "children": [
+              {
+                "object_code": "MT1.TU1.LU2.KP6",
+                "type_code": "KP",
+                "name": "КП-6",
+                "km": 6,
+                "seq_no": 1,
+                "children": [
+                  {"object_code": "MT1.TU1.LU2.KP6.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU1.LU2.KP6.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU1.LU2.KP6.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU1.LU2.KP30",
+                "type_code": "KP",
+                "name": "КП-30",
+                "km": 30,
+                "seq_no": 2,
+                "children": [
+                  {"object_code": "MT1.TU1.LU2.KP30.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU1.LU2.KP30.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU1.LU2.KP30.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU1.LU2.KP54",
+                "type_code": "KP",
+                "name": "КП-54",
+                "km": 54,
+                "seq_no": 3,
+                "children": [
+                  {"object_code": "MT1.TU1.LU2.KP54.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU1.LU2.KP54.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU1.LU2.KP54.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU1.LU2.KP58",
+                "type_code": "KP",
+                "name": "КП-58",
+                "km": 58,
+                "seq_no": 4,
+                "children": [
+                  {"object_code": "MT1.TU1.LU2.KP58.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU1.LU2.KP58.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU1.LU2.KP58.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU1.LU2.KP63",
+                "type_code": "KP",
+                "name": "КП-63",
+                "km": 63,
+                "seq_no": 5,
+                "children": [
+                  {"object_code": "MT1.TU1.LU2.KP63.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU1.LU2.KP63.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU1.LU2.KP63.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU1.LU2.KP91",
+                "type_code": "KP",
+                "name": "КП-91",
+                "km": 91,
+                "seq_no": 6,
+                "children": [
+                  {"object_code": "MT1.TU1.LU2.KP91.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU1.LU2.KP91.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU1.LU2.KP91.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU1.LU2.KP100",
+                "type_code": "KP",
+                "name": "КП-100",
+                "km": 100,
+                "seq_no": 7,
+                "children": [
+                  {"object_code": "MT1.TU1.LU2.KP100.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU1.LU2.KP100.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU1.LU2.KP100.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU1.LU2.KP108",
+                "type_code": "KP",
+                "name": "КП-108",
+                "km": 108,
+                "seq_no": 8,
+                "children": [
+                  {"object_code": "MT1.TU1.LU2.KP108.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU1.LU2.KP108.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU1.LU2.KP108.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU1.LU2.KP110",
+                "type_code": "KP",
+                "name": "КП-110",
+                "km": 110,
+                "seq_no": 9,
+                "children": [
+                  {"object_code": "MT1.TU1.LU2.KP110.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU1.LU2.KP110.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU1.LU2.KP110.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU1.LU2.KP114",
+                "type_code": "KP",
+                "name": "КП-114",
+                "km": 114,
+                "seq_no": 10,
+                "children": [
+                  {"object_code": "MT1.TU1.LU2.KP114.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU1.LU2.KP114.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU1.LU2.KP114.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              }
+            ]
+          },
+          {
+            "object_code": "MT1.TU1.END",
+            "type_code": "END",
+            "name": "Конечный пункт ТУ-1",
+            "seq_no": 5,
+            "children": [
+              {
+                "object_code": "MT1.TU1.END.RP",
+                "type_code": "RP",
+                "name": "РП конечного пункта ТУ-1",
+                "children": [
+                  {"object_code": "MT1.TU1.END.RP.RVS1", "type_code": "RVS", "name": "РВС-1", "seq_no": 1},
+                  {"object_code": "MT1.TU1.END.RP.RVS2", "type_code": "RVS", "name": "РВС-2", "seq_no": 2}
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "object_code": "MT1.TU2",
+        "type_code": "TU",
+        "name": "ТУ-2",
+        "seq_no": 2,
+        "children": [
+          {
+            "object_code": "MT1.TU2.GNPS2",
+            "type_code": "GNPS",
+            "name": "ГНПС-2",
+            "seq_no": 1,
+            "children": [
+              {
+                "object_code": "MT1.TU2.GNPS2.PNS",
+                "type_code": "PNS",
+                "name": "Подпорная насосная станция",
+                "seq_no": 1,
+                "children": [
+                  {
+                    "object_code": "MT1.TU2.GNPS2.PNS.PA1",
+                    "type_code": "PA",
+                    "name": "ПА-1",
+                    "seq_no": 1,
+                    "children": [
+                      {"object_code": "MT1.TU2.GNPS2.PNS.PA1.ZD_IN", "type_code": "ZD", "name": "Задвижка на входе ПА-1", "seq_no": 1},
+                      {"object_code": "MT1.TU2.GNPS2.PNS.PA1.ZD_OUT", "type_code": "ZD", "name": "Задвижка на выходе ПА-1", "seq_no": 2}
+                    ]
+                  },
+                  {
+                    "object_code": "MT1.TU2.GNPS2.PNS.PA2",
+                    "type_code": "PA",
+                    "name": "ПА-2",
+                    "seq_no": 2,
+                    "children": [
+                      {"object_code": "MT1.TU2.GNPS2.PNS.PA2.ZD_IN", "type_code": "ZD", "name": "Задвижка на входе ПА-2", "seq_no": 1},
+                      {"object_code": "MT1.TU2.GNPS2.PNS.PA2.ZD_OUT", "type_code": "ZD", "name": "Задвижка на выходе ПА-2", "seq_no": 2}
+                    ]
+                  },
+                  {
+                    "object_code": "MT1.TU2.GNPS2.PNS.PA3",
+                    "type_code": "PA",
+                    "name": "ПА-3",
+                    "seq_no": 3,
+                    "children": [
+                      {"object_code": "MT1.TU2.GNPS2.PNS.PA3.ZD_IN", "type_code": "ZD", "name": "Задвижка на входе ПА-3", "seq_no": 1},
+                      {"object_code": "MT1.TU2.GNPS2.PNS.PA3.ZD_OUT", "type_code": "ZD", "name": "Задвижка на выходе ПА-3", "seq_no": 2}
+                    ]
+                  }
+                ]
+              },
+              {
+                "object_code": "MT1.TU2.GNPS2.KPP_SOD",
+                "type_code": "KPP_SOD",
+                "name": "КПП СОД",
+                "seq_no": 2,
+                "children": [
+                  {"object_code": "MT1.TU2.GNPS2.KPP_SOD.PRIEM", "type_code": "KAM_PRIEM", "name": "Камера приема СОД", "seq_no": 1},
+                  {"object_code": "MT1.TU2.GNPS2.KPP_SOD.PUSK", "type_code": "KAM_PUSK", "name": "Камера пуска СОД", "seq_no": 2},
+                  {"object_code": "MT1.TU2.GNPS2.KPP_SOD.ZD1", "type_code": "ZD", "name": "Задвижка 1 узла КПП СОД", "seq_no": 3},
+                  {"object_code": "MT1.TU2.GNPS2.KPP_SOD.ZD2", "type_code": "ZD", "name": "Задвижка 2 узла КПП СОД", "seq_no": 4},
+                  {"object_code": "MT1.TU2.GNPS2.KPP_SOD.ZD3", "type_code": "ZD", "name": "Задвижка 3 узла КПП СОД", "seq_no": 5},
+                  {"object_code": "MT1.TU2.GNPS2.KPP_SOD.ZD4", "type_code": "ZD", "name": "Задвижка 4 узла КПП СОД", "seq_no": 6},
+                  {"object_code": "MT1.TU2.GNPS2.KPP_SOD.ZD5", "type_code": "ZD", "name": "Задвижка 5 узла КПП СОД", "seq_no": 7},
+                  {"object_code": "MT1.TU2.GNPS2.KPP_SOD.ZD6", "type_code": "ZD", "name": "Задвижка 6 узла КПП СОД", "seq_no": 8}
+                ]
+              },
+              {
+                "object_code": "MT1.TU2.GNPS2.FGU",
+                "type_code": "FGU_BLOCK",
+                "name": "Блок ФГУ",
+                "seq_no": 3,
+                "children": [
+                  {
+                    "object_code": "MT1.TU2.GNPS2.FGU.F1",
+                    "type_code": "FGU",
+                    "name": "ФГУ-1",
+                    "seq_no": 1,
+                    "children": [
+                      {"object_code": "MT1.TU2.GNPS2.FGU.F1.ZD_IN", "type_code": "ZD", "name": "Задвижка на входе ФГУ-1", "seq_no": 1},
+                      {"object_code": "MT1.TU2.GNPS2.FGU.F1.ZD_OUT", "type_code": "ZD", "name": "Задвижка на выходе ФГУ-1", "seq_no": 2}
+                    ]
+                  },
+                  {
+                    "object_code": "MT1.TU2.GNPS2.FGU.F2",
+                    "type_code": "FGU",
+                    "name": "ФГУ-2",
+                    "seq_no": 2,
+                    "children": [
+                      {"object_code": "MT1.TU2.GNPS2.FGU.F2.ZD_IN", "type_code": "ZD", "name": "Задвижка на входе ФГУ-2", "seq_no": 1},
+                      {"object_code": "MT1.TU2.GNPS2.FGU.F2.ZD_OUT", "type_code": "ZD", "name": "Задвижка на выходе ФГУ-2", "seq_no": 2}
+                    ]
+                  }
+                ]
+              },
+              {
+                "object_code": "MT1.TU2.GNPS2.NS",
+                "type_code": "NS",
+                "name": "Магистральная насосная станция",
+                "seq_no": 4,
+                "children": [
+                  {
+                    "object_code": "MT1.TU2.GNPS2.NS.MNA1",
+                    "type_code": "MNA",
+                    "name": "МНА-1",
+                    "seq_no": 1,
+                    "children": [
+                      {"object_code": "MT1.TU2.GNPS2.NS.MNA1.ZD_IN", "type_code": "ZD", "name": "Задвижка на входе МНА-1", "seq_no": 1},
+                      {"object_code": "MT1.TU2.GNPS2.NS.MNA1.ZD_OUT", "type_code": "ZD", "name": "Задвижка на выходе МНА-1", "seq_no": 2},
+                      {"object_code": "MT1.TU2.GNPS2.NS.MNA1.OK", "type_code": "OK", "name": "Обратный клапан МНА-1", "seq_no": 3}
+                    ]
+                  },
+                  {
+                    "object_code": "MT1.TU2.GNPS2.NS.MNA2",
+                    "type_code": "MNA",
+                    "name": "МНА-2",
+                    "seq_no": 2,
+                    "children": [
+                      {"object_code": "MT1.TU2.GNPS2.NS.MNA2.ZD_IN", "type_code": "ZD", "name": "Задвижка на входе МНА-2", "seq_no": 1},
+                      {"object_code": "MT1.TU2.GNPS2.NS.MNA2.ZD_OUT", "type_code": "ZD", "name": "Задвижка на выходе МНА-2", "seq_no": 2},
+                      {"object_code": "MT1.TU2.GNPS2.NS.MNA2.OK", "type_code": "OK", "name": "Обратный клапан МНА-2", "seq_no": 3}
+                    ]
+                  },
+                  {
+                    "object_code": "MT1.TU2.GNPS2.NS.MNA3",
+                    "type_code": "MNA",
+                    "name": "МНА-3",
+                    "seq_no": 3,
+                    "children": [
+                      {"object_code": "MT1.TU2.GNPS2.NS.MNA3.ZD_IN", "type_code": "ZD", "name": "Задвижка на входе МНА-3", "seq_no": 1},
+                      {"object_code": "MT1.TU2.GNPS2.NS.MNA3.ZD_OUT", "type_code": "ZD", "name": "Задвижка на выходе МНА-3", "seq_no": 2},
+                      {"object_code": "MT1.TU2.GNPS2.NS.MNA3.OK", "type_code": "OK", "name": "Обратный клапан МНА-3", "seq_no": 3}
+                    ]
+                  },
+                  {
+                    "object_code": "MT1.TU2.GNPS2.NS.MNA4",
+                    "type_code": "MNA",
+                    "name": "МНА-4",
+                    "seq_no": 4,
+                    "children": [
+                      {"object_code": "MT1.TU2.GNPS2.NS.MNA4.ZD_IN", "type_code": "ZD", "name": "Задвижка на входе МНА-4", "seq_no": 1},
+                      {"object_code": "MT1.TU2.GNPS2.NS.MNA4.ZD_OUT", "type_code": "ZD", "name": "Задвижка на выходе МНА-4", "seq_no": 2},
+                      {"object_code": "MT1.TU2.GNPS2.NS.MNA4.OK", "type_code": "OK", "name": "Обратный клапан МНА-4", "seq_no": 3}
+                    ]
+                  }
+                ]
+              },
+              {
+                "object_code": "MT1.TU2.GNPS2.SARD",
+                "type_code": "SARD",
+                "name": "САРД",
+                "seq_no": 5,
+                "children": [
+                  {
+                    "object_code": "MT1.TU2.GNPS2.SARD.L1",
+                    "type_code": "SARD_LINE",
+                    "name": "Нитка САРД 1",
+                    "seq_no": 1,
+                    "children": [
+                      {"object_code": "MT1.TU2.GNPS2.SARD.L1.ZD_IN", "type_code": "ZD", "name": "Задвижка до заслонки 1", "seq_no": 1},
+                      {"object_code": "MT1.TU2.GNPS2.SARD.L1.ZASL", "type_code": "ZASL", "name": "Регулирующая заслонка 1", "seq_no": 2},
+                      {"object_code": "MT1.TU2.GNPS2.SARD.L1.ZD_OUT", "type_code": "ZD", "name": "Задвижка после заслонки 1", "seq_no": 3}
+                    ]
+                  },
+                  {
+                    "object_code": "MT1.TU2.GNPS2.SARD.L2",
+                    "type_code": "SARD_LINE",
+                    "name": "Нитка САРД 2",
+                    "seq_no": 2,
+                    "children": [
+                      {"object_code": "MT1.TU2.GNPS2.SARD.L2.ZD_IN", "type_code": "ZD", "name": "Задвижка до заслонки 2", "seq_no": 1},
+                      {"object_code": "MT1.TU2.GNPS2.SARD.L2.ZASL", "type_code": "ZASL", "name": "Регулирующая заслонка 2", "seq_no": 2},
+                      {"object_code": "MT1.TU2.GNPS2.SARD.L2.ZD_OUT", "type_code": "ZD", "name": "Задвижка после заслонки 2", "seq_no": 3}
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "object_code": "MT1.TU2.LU1",
+            "type_code": "LU",
+            "name": "ЛУ ГНПС-2 – НПС-2",
+            "seq_no": 2,
+            "children": [
+              {
+                "object_code": "MT1.TU2.LU1.KP15",
+                "type_code": "KP",
+                "name": "КП-15",
+                "km": 15,
+                "seq_no": 1,
+                "children": [
+                  {"object_code": "MT1.TU2.LU1.KP15.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU2.LU1.KP15.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU2.LU1.KP15.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU2.LU1.KP17",
+                "type_code": "KP",
+                "name": "КП-17",
+                "km": 17,
+                "seq_no": 2,
+                "children": [
+                  {"object_code": "MT1.TU2.LU1.KP17.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU2.LU1.KP17.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU2.LU1.KP17.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU2.LU1.KP27",
+                "type_code": "KP",
+                "name": "КП-27",
+                "km": 27,
+                "seq_no": 3,
+                "children": [
+                  {"object_code": "MT1.TU2.LU1.KP27.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU2.LU1.KP27.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU2.LU1.KP27.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU2.LU1.KP29",
+                "type_code": "KP",
+                "name": "КП-29",
+                "km": 29,
+                "seq_no": 4,
+                "children": [
+                  {"object_code": "MT1.TU2.LU1.KP29.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU2.LU1.KP29.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU2.LU1.KP29.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU2.LU1.KP55",
+                "type_code": "KP",
+                "name": "КП-55",
+                "km": 55,
+                "seq_no": 5,
+                "children": [
+                  {"object_code": "MT1.TU2.LU1.KP55.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU2.LU1.KP55.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU2.LU1.KP55.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU2.LU1.KP80",
+                "type_code": "KP",
+                "name": "КП-80",
+                "km": 80,
+                "seq_no": 6,
+                "children": [
+                  {"object_code": "MT1.TU2.LU1.KP80.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU2.LU1.KP80.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU2.LU1.KP80.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU2.LU1.KP82",
+                "type_code": "KP",
+                "name": "КП-82",
+                "km": 82,
+                "seq_no": 7,
+                "children": [
+                  {"object_code": "MT1.TU2.LU1.KP82.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU2.LU1.KP82.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU2.LU1.KP82.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU2.LU1.KP99",
+                "type_code": "KP",
+                "name": "КП-99",
+                "km": 99,
+                "seq_no": 8,
+                "children": [
+                  {"object_code": "MT1.TU2.LU1.KP99.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU2.LU1.KP99.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU2.LU1.KP99.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU2.LU1.KP102",
+                "type_code": "KP",
+                "name": "КП-102",
+                "km": 102,
+                "seq_no": 9,
+                "children": [
+                  {"object_code": "MT1.TU2.LU1.KP102.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU2.LU1.KP102.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU2.LU1.KP102.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU2.LU1.KP116",
+                "type_code": "KP",
+                "name": "КП-116",
+                "km": 116,
+                "seq_no": 10,
+                "children": [
+                  {"object_code": "MT1.TU2.LU1.KP116.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU2.LU1.KP116.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU2.LU1.KP116.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU2.LU1.KP137",
+                "type_code": "KP",
+                "name": "КП-137",
+                "km": 137,
+                "seq_no": 11,
+                "children": [
+                  {"object_code": "MT1.TU2.LU1.KP137.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU2.LU1.KP137.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU2.LU1.KP137.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU2.LU1.KP149",
+                "type_code": "KP",
+                "name": "КП-149",
+                "km": 149,
+                "seq_no": 12,
+                "children": [
+                  {"object_code": "MT1.TU2.LU1.KP149.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU2.LU1.KP149.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU2.LU1.KP149.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU2.LU1.KP166",
+                "type_code": "KP",
+                "name": "КП-166",
+                "km": 166,
+                "seq_no": 13,
+                "children": [
+                  {"object_code": "MT1.TU2.LU1.KP166.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU2.LU1.KP166.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU2.LU1.KP166.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              }
+            ]
+          },
+          {
+            "object_code": "MT1.TU2.NPS2",
+            "type_code": "NPS",
+            "name": "НПС-2 (ТУ-2)",
+            "seq_no": 3,
+            "children": [
+              {
+                "object_code": "MT1.TU2.NPS2.KPP_SOD",
+                "type_code": "KPP_SOD",
+                "name": "КПП СОД",
+                "seq_no": 1,
+                "children": [
+                  {"object_code": "MT1.TU2.NPS2.KPP_SOD.PRIEM", "type_code": "KAM_PRIEM", "name": "Камера приема СОД", "seq_no": 1},
+                  {"object_code": "MT1.TU2.NPS2.KPP_SOD.PUSK", "type_code": "KAM_PUSK", "name": "Камера пуска СОД", "seq_no": 2},
+                  {"object_code": "MT1.TU2.NPS2.KPP_SOD.ZD1", "type_code": "ZD", "name": "Задвижка 1 узла КПП СОД", "seq_no": 3},
+                  {"object_code": "MT1.TU2.NPS2.KPP_SOD.ZD2", "type_code": "ZD", "name": "Задвижка 2 узла КПП СОД", "seq_no": 4},
+                  {"object_code": "MT1.TU2.NPS2.KPP_SOD.ZD3", "type_code": "ZD", "name": "Задвижка 3 узла КПП СОД", "seq_no": 5},
+                  {"object_code": "MT1.TU2.NPS2.KPP_SOD.ZD4", "type_code": "ZD", "name": "Задвижка 4 узла КПП СОД", "seq_no": 6},
+                  {"object_code": "MT1.TU2.NPS2.KPP_SOD.ZD5", "type_code": "ZD", "name": "Задвижка 5 узла КПП СОД", "seq_no": 7},
+                  {"object_code": "MT1.TU2.NPS2.KPP_SOD.ZD6", "type_code": "ZD", "name": "Задвижка 6 узла КПП СОД", "seq_no": 8}
+                ]
+              },
+              {
+                "object_code": "MT1.TU2.NPS2.FGU",
+                "type_code": "FGU_BLOCK",
+                "name": "Блок ФГУ",
+                "seq_no": 2,
+                "children": [
+                  {
+                    "object_code": "MT1.TU2.NPS2.FGU.F1",
+                    "type_code": "FGU",
+                    "name": "ФГУ-1",
+                    "seq_no": 1,
+                    "children": [
+                      {"object_code": "MT1.TU2.NPS2.FGU.F1.ZD_IN", "type_code": "ZD", "name": "Задвижка на входе ФГУ-1", "seq_no": 1},
+                      {"object_code": "MT1.TU2.NPS2.FGU.F1.ZD_OUT", "type_code": "ZD", "name": "Задвижка на выходе ФГУ-1", "seq_no": 2}
+                    ]
+                  },
+                  {
+                    "object_code": "MT1.TU2.NPS2.FGU.F2",
+                    "type_code": "FGU",
+                    "name": "ФГУ-2",
+                    "seq_no": 2,
+                    "children": [
+                      {"object_code": "MT1.TU2.NPS2.FGU.F2.ZD_IN", "type_code": "ZD", "name": "Задвижка на входе ФГУ-2", "seq_no": 1},
+                      {"object_code": "MT1.TU2.NPS2.FGU.F2.ZD_OUT", "type_code": "ZD", "name": "Задвижка на выходе ФГУ-2", "seq_no": 2}
+                    ]
+                  }
+                ]
+              },
+              {
+                "object_code": "MT1.TU2.NPS2.NS",
+                "type_code": "NS",
+                "name": "Магистральная насосная станция",
+                "seq_no": 3,
+                "children": [
+                  {
+                    "object_code": "MT1.TU2.NPS2.NS.MNA1",
+                    "type_code": "MNA",
+                    "name": "МНА-1",
+                    "seq_no": 1,
+                    "children": [
+                      {"object_code": "MT1.TU2.NPS2.NS.MNA1.ZD_IN", "type_code": "ZD", "name": "Задвижка на входе МНА-1", "seq_no": 1},
+                      {"object_code": "MT1.TU2.NPS2.NS.MNA1.ZD_OUT", "type_code": "ZD", "name": "Задвижка на выходе МНА-1", "seq_no": 2},
+                      {"object_code": "MT1.TU2.NPS2.NS.MNA1.OK", "type_code": "OK", "name": "Обратный клапан МНА-1", "seq_no": 3}
+                    ]
+                  },
+                  {
+                    "object_code": "MT1.TU2.NPS2.NS.MNA2",
+                    "type_code": "MNA",
+                    "name": "МНА-2",
+                    "seq_no": 2,
+                    "children": [
+                      {"object_code": "MT1.TU2.NPS2.NS.MNA2.ZD_IN", "type_code": "ZD", "name": "Задвижка на входе МНА-2", "seq_no": 1},
+                      {"object_code": "MT1.TU2.NPS2.NS.MNA2.ZD_OUT", "type_code": "ZD", "name": "Задвижка на выходе МНА-2", "seq_no": 2},
+                      {"object_code": "MT1.TU2.NPS2.NS.MNA2.OK", "type_code": "OK", "name": "Обратный клапан МНА-2", "seq_no": 3}
+                    ]
+                  },
+                  {
+                    "object_code": "MT1.TU2.NPS2.NS.MNA3",
+                    "type_code": "MNA",
+                    "name": "МНА-3",
+                    "seq_no": 3,
+                    "children": [
+                      {"object_code": "MT1.TU2.NPS2.NS.MNA3.ZD_IN", "type_code": "ZD", "name": "Задвижка на входе МНА-3", "seq_no": 1},
+                      {"object_code": "MT1.TU2.NPS2.NS.MNA3.ZD_OUT", "type_code": "ZD", "name": "Задвижка на выходе МНА-3", "seq_no": 2},
+                      {"object_code": "MT1.TU2.NPS2.NS.MNA3.OK", "type_code": "OK", "name": "Обратный клапан МНА-3", "seq_no": 3}
+                    ]
+                  },
+                  {
+                    "object_code": "MT1.TU2.NPS2.NS.MNA4",
+                    "type_code": "MNA",
+                    "name": "МНА-4",
+                    "seq_no": 4,
+                    "children": [
+                      {"object_code": "MT1.TU2.NPS2.NS.MNA4.ZD_IN", "type_code": "ZD", "name": "Задвижка на входе МНА-4", "seq_no": 1},
+                      {"object_code": "MT1.TU2.NPS2.NS.MNA4.ZD_OUT", "type_code": "ZD", "name": "Задвижка на выходе МНА-4", "seq_no": 2},
+                      {"object_code": "MT1.TU2.NPS2.NS.MNA4.OK", "type_code": "OK", "name": "Обратный клапан МНА-4", "seq_no": 3}
+                    ]
+                  }
+                ]
+              },
+              {
+                "object_code": "MT1.TU2.NPS2.SARD",
+                "type_code": "SARD",
+                "name": "САРД",
+                "seq_no": 4,
+                "children": [
+                  {
+                    "object_code": "MT1.TU2.NPS2.SARD.L1",
+                    "type_code": "SARD_LINE",
+                    "name": "Нитка САРД 1",
+                    "seq_no": 1,
+                    "children": [
+                      {"object_code": "MT1.TU2.NPS2.SARD.L1.ZD_IN", "type_code": "ZD", "name": "Задвижка до заслонки 1", "seq_no": 1},
+                      {"object_code": "MT1.TU2.NPS2.SARD.L1.ZASL", "type_code": "ZASL", "name": "Регулирующая заслонка 1", "seq_no": 2},
+                      {"object_code": "MT1.TU2.NPS2.SARD.L1.ZD_OUT", "type_code": "ZD", "name": "Задвижка после заслонки 1", "seq_no": 3}
+                    ]
+                  },
+                  {
+                    "object_code": "MT1.TU2.NPS2.SARD.L2",
+                    "type_code": "SARD_LINE",
+                    "name": "Нитка САРД 2",
+                    "seq_no": 2,
+                    "children": [
+                      {"object_code": "MT1.TU2.NPS2.SARD.L2.ZD_IN", "type_code": "ZD", "name": "Задвижка до заслонки 2", "seq_no": 1},
+                      {"object_code": "MT1.TU2.NPS2.SARD.L2.ZASL", "type_code": "ZASL", "name": "Регулирующая заслонка 2", "seq_no": 2},
+                      {"object_code": "MT1.TU2.NPS2.SARD.L2.ZD_OUT", "type_code": "ZD", "name": "Задвижка после заслонки 2", "seq_no": 3}
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "object_code": "MT1.TU2.LU2",
+            "type_code": "LU",
+            "name": "ЛУ НПС-2 – КП ТУ-2",
+            "seq_no": 4,
+            "children": [
+              {
+                "object_code": "MT1.TU2.LU2.KP214",
+                "type_code": "KP",
+                "name": "КП-214",
+                "km": 214,
+                "seq_no": 1,
+                "children": [
+                  {"object_code": "MT1.TU2.LU2.KP214.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU2.LU2.KP214.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU2.LU2.KP214.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU2.LU2.KP236",
+                "type_code": "KP",
+                "name": "КП-236",
+                "km": 236,
+                "seq_no": 2,
+                "children": [
+                  {"object_code": "MT1.TU2.LU2.KP236.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU2.LU2.KP236.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU2.LU2.KP236.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU2.LU2.KP265",
+                "type_code": "KP",
+                "name": "КП-265",
+                "km": 265,
+                "seq_no": 3,
+                "children": [
+                  {"object_code": "MT1.TU2.LU2.KP265.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU2.LU2.KP265.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU2.LU2.KP265.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU2.LU2.KP279",
+                "type_code": "KP",
+                "name": "КП-279",
+                "km": 279,
+                "seq_no": 4,
+                "children": [
+                  {"object_code": "MT1.TU2.LU2.KP279.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU2.LU2.KP279.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU2.LU2.KP279.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU2.LU2.KP294",
+                "type_code": "KP",
+                "name": "КП-294",
+                "km": 294,
+                "seq_no": 5,
+                "children": [
+                  {"object_code": "MT1.TU2.LU2.KP294.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU2.LU2.KP294.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU2.LU2.KP294.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU2.LU2.KP295",
+                "type_code": "KP",
+                "name": "КП-295",
+                "km": 295,
+                "seq_no": 6,
+                "children": [
+                  {"object_code": "MT1.TU2.LU2.KP295.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU2.LU2.KP295.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU2.LU2.KP295.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU2.LU2.KP313",
+                "type_code": "KP",
+                "name": "КП-313",
+                "km": 313,
+                "seq_no": 7,
+                "children": [
+                  {"object_code": "MT1.TU2.LU2.KP313.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU2.LU2.KP313.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU2.LU2.KP313.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU2.LU2.KP320",
+                "type_code": "KP",
+                "name": "КП-320",
+                "km": 320,
+                "seq_no": 8,
+                "children": [
+                  {"object_code": "MT1.TU2.LU2.KP320.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU2.LU2.KP320.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU2.LU2.KP320.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU2.LU2.KP321",
+                "type_code": "KP",
+                "name": "КП-321",
+                "km": 321,
+                "seq_no": 9,
+                "children": [
+                  {"object_code": "MT1.TU2.LU2.KP321.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU2.LU2.KP321.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU2.LU2.KP321.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU2.LU2.KP328",
+                "type_code": "KP",
+                "name": "КП-328",
+                "km": 328,
+                "seq_no": 10,
+                "children": [
+                  {"object_code": "MT1.TU2.LU2.KP328.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU2.LU2.KP328.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU2.LU2.KP328.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU2.LU2.KP329",
+                "type_code": "KP",
+                "name": "КП-329",
+                "km": 329,
+                "seq_no": 11,
+                "children": [
+                  {"object_code": "MT1.TU2.LU2.KP329.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU2.LU2.KP329.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU2.LU2.KP329.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU2.LU2.KP351",
+                "type_code": "KP",
+                "name": "КП-351",
+                "km": 351,
+                "seq_no": 12,
+                "children": [
+                  {"object_code": "MT1.TU2.LU2.KP351.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU2.LU2.KP351.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU2.LU2.KP351.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU2.LU2.KP369",
+                "type_code": "KP",
+                "name": "КП-369",
+                "km": 369,
+                "seq_no": 13,
+                "children": [
+                  {"object_code": "MT1.TU2.LU2.KP369.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU2.LU2.KP369.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU2.LU2.KP369.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU2.LU2.KP389",
+                "type_code": "KP",
+                "name": "КП-389",
+                "km": 389,
+                "seq_no": 14,
+                "children": [
+                  {"object_code": "MT1.TU2.LU2.KP389.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU2.LU2.KP389.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU2.LU2.KP389.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              },
+              {
+                "object_code": "MT1.TU2.LU2.KP416",
+                "type_code": "KP",
+                "name": "КП-416",
+                "km": 416,
+                "seq_no": 15,
+                "children": [
+                  {"object_code": "MT1.TU2.LU2.KP416.DD_BEFORE", "type_code": "DD", "name": "Датчик давления до задвижки", "seq_no": 1},
+                  {"object_code": "MT1.TU2.LU2.KP416.ZD", "type_code": "ZD", "name": "Линейная задвижка", "seq_no": 2},
+                  {"object_code": "MT1.TU2.LU2.KP416.DD_AFTER", "type_code": "DD", "name": "Датчик давления после задвижки", "seq_no": 3}
+                ]
+              }
+            ]
+          },
+          {
+            "object_code": "MT1.TU2.END",
+            "type_code": "END",
+            "name": "Конечный пункт ТУ-2",
+            "seq_no": 5,
+            "children": [
+              {
+                "object_code": "MT1.TU2.END.RP",
+                "type_code": "RP",
+                "name": "РП конечного пункта ТУ-2",
+                "children": [
+                  {"object_code": "MT1.TU2.END.RP.RVS1", "type_code": "RVS", "name": "РВС-1", "seq_no": 1},
+                  {"object_code": "MT1.TU2.END.RP.RVS2", "type_code": "RVS", "name": "РВС-2", "seq_no": 2}
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "links": [
+    {"from": "MT1.TU1.GNPS1", "to": "MT1.SITE_HEAD.RP", "link_type": "USES"},
+    {"from": "MT1.TU1.GNPS1", "to": "MT1.SITE_HEAD", "link_type": "LOCATED_AT"},
+    {"from": "MT1.TU1.NPS2", "to": "MT1.SITE_NPS2", "link_type": "LOCATED_AT"},
+    {"from": "MT1.TU2.GNPS2", "to": "MT1.SITE_HEAD.RP", "link_type": "USES"},
+    {"from": "MT1.TU2.GNPS2", "to": "MT1.SITE_HEAD", "link_type": "LOCATED_AT"},
+    {"from": "MT1.TU2.NPS2", "to": "MT1.SITE_NPS2", "link_type": "LOCATED_AT"}
+  ]
+}
